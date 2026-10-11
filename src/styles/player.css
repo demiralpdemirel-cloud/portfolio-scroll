@@ -1,0 +1,104 @@
+/* Shared player geometry stays inside each existing chapter/modal frame. */
+.premium-player { overflow: visible; background: transparent; isolation: isolate; }
+.player-viewport { position: relative; z-index: 1; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+.premium-player .showreel-player__video { background: transparent; }
+.premium-player.lazy-video { aspect-ratio: auto; width: 100%; height: 100%; margin: 0; }
+.premium-player.lazy-video video { opacity: 1; z-index: auto; object-fit: contain; }
+.player-ratio-probe { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.premium-player .showreel-player__play-overlay { z-index: 2; inset: 0 0 72px; background: transparent; }
+.premium-player .showreel-player__play-overlay span { font: 42px/1 sans-serif; color: #eee; letter-spacing: 0; }
+.premium-player .showreel-player__play-overlay .player-icon { width: 42px; height: 42px; }
+.premium-player .showreel-player__controls { z-index: 4; display: block; padding: 30px 16px 8px; opacity: 0; pointer-events: none; transform: translateY(3px); transition: opacity .2s ease, transform .2s ease; background: linear-gradient(transparent, #030303e8); }
+.premium-player.player-controls-visible .showreel-player__controls { opacity: 1; pointer-events: auto; transform: none; }
+.premium-player:not(.player-controls-visible) .showreel-player__controls { opacity: 0; pointer-events: none; }
+.premium-player .player-toolbar { display: flex; align-items: center; gap: 12px; min-height: 38px; }
+.premium-player .showreel-player__controls button { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; min-height: 38px; padding: 4px; font: 12px/1 Space Mono, monospace; letter-spacing: 0; transition: opacity .18s ease; }
+.premium-player .showreel-player__controls button:first-child, .premium-player .showreel-player__controls button:last-child { display: inline-flex; }
+.premium-player .showreel-player__time { font: 11px/1.4 Space Mono, monospace; }
+.premium-player button:focus-visible, .premium-player input:focus-visible, .premium-player:focus-visible { outline: 1px solid #e6e4dd; outline-offset: 3px; }
+.player-volume { display: flex; align-items: center; margin-right: auto; }
+.player-volume input { width: 0; opacity: 0; accent-color: #e6e4dd; transition: width .2s, opacity .2s; cursor: pointer; }
+.player-volume:hover input, .player-volume:focus-within input { width: 68px; opacity: 1; }
+.player-speed { position: relative; }
+.player-speed__menu { position: absolute; right: 0; bottom: calc(100% + 12px); min-width: 104px; padding: 6px; background: #101010; border: 1px solid #ffffff24; animation: player-menu-in .18s ease; }
+.premium-player .player-speed__menu button { display: flex; justify-content: space-between; width: 100%; min-height: 30px; }
+.player-speed__menu button[aria-pressed="true"] { background: #ffffff10; }
+.premium-player .player-ambient-toggle { font-size: 10px; opacity: .45; }
+.premium-player .player-ambient-toggle[aria-pressed="true"] { opacity: 1; }
+.player-timeline { position: relative; height: 24px; display: flex; align-items: center; }
+.player-timeline__track { position: absolute; left: 0; right: 0; height: 4px; background: #ffffff24; transition: height .18s; pointer-events: none; }
+.player-timeline__track i, .player-timeline__track b { display: block; position: absolute; left: 0; top: 0; bottom: 0; }
+.player-timeline__track i { width: var(--buffered); background: #ffffff3a; }
+.player-timeline__track b { width: var(--played); background: #e6e4dd; }
+.player-timeline:hover .player-timeline__track, .player-timeline:focus-within .player-timeline__track { height: 6px; }
+.player-timeline input { position: relative; width: 100%; margin: 0; appearance: none; background: transparent; height: 24px; cursor: pointer; }
+.player-timeline input::-webkit-slider-runnable-track { height: 4px; background: transparent; }
+.player-timeline input::-webkit-slider-thumb { appearance: none; width: 10px; height: 10px; margin-top: -3px; border-radius: 50%; background: #e6e4dd; opacity: 0; transition: opacity .18s, transform .18s; }
+.player-timeline:hover input::-webkit-slider-thumb, .player-timeline input:focus-visible::-webkit-slider-thumb { opacity: 1; }
+.player-timeline input:active::-webkit-slider-thumb { opacity: 1; transform: scale(1.35); }
+.player-timeline input::-moz-range-track { background: transparent; }
+.player-timeline input::-moz-range-thumb { border: 0; width: 10px; height: 10px; background: #e6e4dd; }
+.player-timeline__tooltip { position: absolute; bottom: 28px; transform: translateX(-50%); padding: 4px 7px; font: 11px Space Mono, monospace; color: #eee; background: #101010; pointer-events: none; }
+.player-loading { position: absolute; left: 50%; top: 50%; width: 25px; height: 25px; margin: -12px; border: 1px solid #ffffff30; border-top-color: #eee; border-radius: 50%; animation: player-spin .8s linear infinite; pointer-events: none; }
+.player-error { position: absolute; left: 16px; top: 16px; color: #eee; font: 11px Space Mono, monospace; }
+/* Each strip starts at the contained picture edge. Three independently masked
+   radii put the strongest light at the frame, with a diminishing outward spill.
+   The middle of the video is never an ambient rendering surface. */
+.player-ambient { --ambient-core: 64px; --ambient-mid: 160px; --ambient-outer: 300px; position: absolute; inset: 0; z-index: 0; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+.player-ambient--enabled { opacity: 1; }
+.player-ambient__edge { position: absolute; inset: 0; overflow: visible; }
+.player-ambient__edge i { --reach: var(--ambient-core); --softness: 20px; position: absolute; display: block; opacity: .9; mask-image: var(--edge-fade), var(--end-fade); mask-composite: intersect; }
+.player-ambient__edge i[data-level="mid"] { --reach: var(--ambient-mid); --softness: 55px; opacity: .6; }
+.player-ambient__edge i[data-level="outer"] { --reach: var(--ambient-outer); --softness: 110px; opacity: .32; }
+.player-ambient__edge[data-edge="top"], .player-ambient__edge[data-edge="bottom"] { --end-fade: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.player-ambient__edge[data-edge="left"], .player-ambient__edge[data-edge="right"] { --end-fade: linear-gradient(transparent, #000 4%, #000 96%, transparent); }
+.player-ambient__edge[data-edge="top"] { --edge-color: var(--ambient-top, 0 0 0); --edge-fade: linear-gradient(transparent, #0003 35%, #0009 70%, #000 94%); }
+.player-ambient__edge[data-edge="top"] i { left: -2%; width: 104%; bottom: calc(100% - 12px); height: calc(var(--reach) + 12px); }
+.player-ambient__edge[data-edge="right"] { --edge-color: var(--ambient-right, 0 0 0); --edge-fade: linear-gradient(90deg, #000 6%, #0009 30%, #0003 65%, transparent); }
+.player-ambient__edge[data-edge="right"] i { top: -2%; height: 104%; left: calc(100% - 12px); width: calc(var(--reach) + 12px); }
+.player-ambient__edge[data-edge="bottom"] { --edge-color: var(--ambient-bottom, 0 0 0); --edge-fade: linear-gradient(#000 6%, #0009 30%, #0003 65%, transparent); }
+.player-ambient__edge[data-edge="bottom"] i { left: -2%; width: 104%; top: calc(100% - 12px); height: calc(var(--reach) + 12px); }
+.player-ambient__edge[data-edge="left"] { --edge-color: var(--ambient-left, 0 0 0); --edge-fade: linear-gradient(90deg, transparent, #0003 35%, #0009 70%, #000 94%); }
+.player-ambient__edge[data-edge="left"] i { top: -2%; height: 104%; right: calc(100% - 12px); width: calc(var(--reach) + 12px); }
+/* Tiny cropped canvases are blurred before enlargement. CSS masks then taper
+   each strip outwards; no player-sized CSS filter or centre-frame haze. */
+.player-ambient__visual { position: absolute; display: block; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--strip-scale-x, 1), var(--strip-scale-y, 1)); }
+/* Alpha-only elliptical feather also covers unreadable CORS canvas strips.
+   End overlap extends across corners; no per-zone DOM blur/filter is added. */
+.player-ambient__edge .player-ambient__visual { mask-image: radial-gradient(ellipse 85% 50% at 50% 50%, #000 0%, #000e 30%, #0009 55%, #0004 78%, transparent 100%); }
+.player-ambient__edge[data-edge="left"] .player-ambient__visual,
+.player-ambient__edge[data-edge="right"] .player-ambient__visual { mask-image: radial-gradient(ellipse 50% 85% at 50% 50%, #000 0%, #000e 30%, #0009 55%, #0004 78%, transparent 100%); }
+.player-ambient { --ambient-backdrop: #090909; }
+:root[data-theme="light"] .player-ambient { --ambient-backdrop: #f2f2ef; }
+:root[data-theme="light"] :is(.project-modal, .production-modal, .showreel-viewer, .fullscreen-viewer) .player-ambient { --ambient-backdrop: #090909; }
+/* Unreadable CORS pixels cannot yield a luminance alpha. Screen them against a
+   theme-matched matte instead: black emits nothing, without a pixel readback.
+   The matte itself shares the feather, so no rectangular surface is exposed. */
+.player-ambient[data-mode="fallback"] .player-ambient__edge i { background: var(--ambient-backdrop); isolation: isolate; mask-image: var(--edge-fade), var(--end-fade), radial-gradient(ellipse 85% 50% at center, #000 0%, #000b 55%, #0004 78%, transparent 100%); }
+.player-ambient[data-mode="fallback"] .player-ambient__edge:is([data-edge="left"], [data-edge="right"]) i { mask-image: var(--edge-fade), var(--end-fade), radial-gradient(ellipse 50% 85% at center, #000 0%, #000b 55%, #0004 78%, transparent 100%); }
+.player-ambient[data-mode="fallback"] .player-ambient__edge .player-ambient__visual { mix-blend-mode: screen; }
+.player-ambient > video.player-ambient__visual { inset: -8%; width: 116%; height: 116%; transform: none; object-fit: fill; filter: blur(20px) brightness(1.5); mask-image: radial-gradient(ellipse 80% 80% at center, #000 35%, #000b 55%, #0004 75%, transparent 100%), linear-gradient(#000, #000); mask-size: 100% 100%, 78% 78%; mask-position: center; mask-repeat: no-repeat; mask-composite: exclude; }
+.premium-player:fullscreen { width: 100vw; height: 100dvh; max-width: none; aspect-ratio: auto; margin: 0; padding: 4svh 4vw; background: #030303; }
+.premium-player:fullscreen .showreel-player__controls { left: 4vw; right: 4vw; bottom: 4svh; }
+
+@keyframes player-spin { to { transform: rotate(360deg); } }
+@keyframes player-menu-in { from { opacity: 0; transform: translateY(3px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .premium-player .showreel-player__controls { padding: 22px 10px 4px; }
+  .premium-player .player-toolbar { gap: 5px; min-height: 44px; }
+  .premium-player .showreel-player__controls button { min-width: 32px; min-height: 44px; font-size: 12px; }
+  .premium-player .showreel-player__time { font-size: 10px; }
+  .premium-player .player-ambient-toggle { font-size: 9px; }
+  .player-volume:hover input, .player-volume:focus-within input { width: 42px; }
+  .player-volume { position: relative; }
+  .player-volume input { position: absolute; left: -10px; bottom: 100%; width: 84px; height: 32px; padding: 6px; background: #101010; pointer-events: none; }
+  .player-volume:hover input, .player-volume:focus-within input { width: 84px; pointer-events: auto; }
+  .player-speed__menu { bottom: calc(100% + 6px); }
+  .player-speed__menu { display: grid; grid-template-columns: 1fr 1fr; min-width: 160px; }
+  .premium-player .player-speed__menu button { min-height: 36px; }
+  .player-ambient { --ambient-core: 36px; --ambient-mid: 80px; --ambient-outer: 140px; }
+  .player-ambient__edge i { --softness: 12px; }
+  .player-ambient__edge i[data-level="mid"] { --softness: 28px; }
+  .player-ambient__edge i[data-level="outer"] { --softness: 48px; }
+}
+@media (prefers-reduced-motion: reduce) { .premium-player *, .player-ambient { transition: none !important; animation-duration: .01ms !important; } }
