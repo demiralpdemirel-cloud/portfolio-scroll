@@ -40,3 +40,18 @@ These are **RAF cadence measurements, not GPU-rendered FPS**. A full GPU/Layers 
 ## Design guidance
 
 Sites presentation guidance informed artwork-first composition and differing chapter motion, while the explicit React/Vite/GitHub requirements determine implementation/hosting. No generated or invented project artwork is used.
+
+## Live Pages verification
+
+Initial deployment: `ba8983f11b4fbb9a0e61e22b58b53301d2eadb25`, Actions run `38184061574` SUCCESS. Live: https://demiralpdemirel-cloud.github.io/portfolio-scroll/
+
+- All twenty live catalog dialogs opened and closed with keyboard controls: restoration 0 px and focus returned for every entry. Six filter counts: 20 / 5 / 3 / 7 / 3 / 11.
+- Live playback confirmed for XpoMatch, EVGA, Keyboard, Mario, Star Wars, ASELSAN and Turkcell. All reached readyState 3 or 4 with advancing currentTime. Showreel reached 20.5 seconds, readyState 4; fullscreen entered/exited. A subsequent language switch preserved playback (20.52 to 20.83 seconds), paused=false and exact scrollY 3432. Offscreen playback arbitration pauses films intentionally.
+- New independent XpoMatch live MP4 returned actual HTTP 206, video/mp4, 1024 bytes for requested range. Original videos remain explicit read-only hosting dependencies.
+- Mobile Cafe MIST selected, full-resolution viewer opened, nested Escape returned to the parent dialog. Turkish statistics and description checked; no scene numbers changed.
+- Live nine-width matrix repeated: 1920, 1440, 1280, 1024, 768, 430, 390, 375, 320; all twenty cards retained, no horizontal overflow. Columns: 5 / 4 / 3 / 3 / 2 / 1 / 1 / 1 / 1. Mobile production modal width matched viewport.
+- Manual Light and Dark switch checked; native navigation/scroll left theme unchanged. Four software controls returned aria-pressed=true. Fast native End/Home traversal reached Contact and returned Hero to scrollY 0 and translate(0px, 0px).
+- Live eight-second probe: 1440 RAF intervals, mean 5.56 ms, p95 5.7 ms, >25 ms 0, >=50 ms long tasks 0. This is not a GPU FPS certification.
+- Original HEAD, remote and full worktree/untracked listing exactly match the pre-task captured baseline. Original live page returned HTTP 200. No original release or deployment was changed.
+- Final build PASS, full suite 54/54 PASS, diff whitespace check PASS. Final live console checked separately; evidence screenshots retained under `docs/qa/`.
+- Live mobile menu opened and navigated to Works. Live explicit reduced-motion QA branch returned mode=reduced, all twenty cards, no transform-driven Hero and no overflow; this does not claim a physical OS preference test. Final live console errors: zero.
