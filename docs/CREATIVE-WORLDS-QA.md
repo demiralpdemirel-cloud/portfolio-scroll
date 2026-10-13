@@ -40,3 +40,11 @@ Build PASS; full test suite 57/57 PASS; whitespace diff check PASS. Explicit red
 Explicit reduced-motion branch returned mode=reduced, 20 primary entries, portrait opacity 1 and no horizontal overflow. This exercises the branch, not a physical OS preference switch. XpoMatch playback reached 66.94 seconds with readyState 4, paused=false; fullscreen entered/exited. Next Project stayed in its Product world and opened EVGA. Final console errors: zero. The portrait SHA-256 is byte-identical to the original asset.
 
 Mario remains a 3D/Motion personal study, not an invented VFX credit. VFX presentation uses Star Wars with explicitly illustrative decoration. The stable primary-world articles own all 20 unique canonical anchors; filtered index rows do not remove deep-link targets. World entrances were diversified further: split studio/compositor headers, technical viewport entry and a smaller theatrical title strip, keeping artwork prominent.
+
+## GitHub Pages verification
+
+Implementation commit `5952803a7f3211fcba36771d5277dc73776d7b98` deployed successfully in Actions run `38471688450`. Actual live DOM shows the new portrait, correct Hero/About order, five worlds and 20 unique primary entries. Portrait loaded at naturalWidth 1000 from this site's own asset.
+
+All 20 live primary dialogs opened their correct content; every close restored exact scroll position and originating focus. Live nine-width matrix repeated without horizontal overflow and with portrait within each first viewport. Category index retained filtering; a settled Product navigation arrived at top 89.72px. Cafe MIST loaded its real asset. Manual Light/Dark and mobile TR/EN exercised, with no scroll reset on language change. XpoMatch reached its full 80-second duration, readyState 4, through the independent Pages MP4; fullscreen entered/exited. The explicit live reduced-motion branch retained all 20 entries and no overflow. Final live console errors: zero.
+
+Original full HEAD/status/remote/untracked snapshot still exactly matches the initial capture; original live site HTTP 200. No original release or deployment was modified. Only this repository's intended source and QA evidence were committed.
