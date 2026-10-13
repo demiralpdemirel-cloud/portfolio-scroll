@@ -2,7 +2,9 @@
 
 An independent scroll-driven portfolio for Demiralp Demirel. React / Vite / GSAP / ScrollTrigger. Native scrolling with art-directed CSS 3D layers; this is not a WebGL character or an actual 3D model viewer.
 
-Hero dolly / artwork fragments; editorial About and portrait depth; kinetic Profile; approaching cinema screen; perspective catalog; expanding modal presentation; education timeline; fifteen verified software workflow studies; cinematic contact.
+Portrait-led identity and Hero dolly; About as the second scene with continuing Profile; approaching cinema screen; compact exploration index; five exclusive primary creative worlds; expanding modal presentation; fifteen verified software workflow studies; education timeline; cinematic contact.
+
+The creative worlds have independent compositions and scroll vocabularies: directed-light Product Studio, architectural line/plane/render reveal, illustrative compositing Z-planes, real Sofa topology-to-shaded presentation, and theatrical production posters/credits. Each of the 20 works belongs to exactly one primary presentation; the small index provides navigation without repeating its artwork. Category selection navigates after layout refresh. Cafe FINAL/SOLID/MIST and all existing media/detail/reference data remain authoritative. Decorative composition planes are explicitly illustrative, not invented project breakdowns or real 3D geometry.
 
 20 unique canonical works, 9 project records and 11 production records. All verified descriptions, software, credits, passes, geometry statistics, references, external links and education/profile information are retained. Unknown roles remain unknown. Source: original portfolio at `db0b7c3f76be50e25017ad7ed178c3b01b6dfb3e`.
 
@@ -33,3 +35,5 @@ Language preferences and Ambient preferences use this project's own storage keys
 `?qa=1` exposes a finite eight-second RAF/long-task probe. Results are RAF cadence, **not GPU-rendered FPS**. No 60/120 FPS guarantee is asserted without hardware-level measurements.
 
 The original repository remains read-only and untouched. See `docs/QA.md` for browser evidence and limitations.
+
+The current portrait/world revision is documented separately in `docs/CREATIVE-WORLDS-QA.md`.

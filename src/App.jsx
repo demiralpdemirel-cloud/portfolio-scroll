@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from './i18n/LanguageContext'
 import LanguageSwitcher from './i18n/LanguageSwitcher'
 import ThemeController from './components/ThemeController'
@@ -9,6 +9,8 @@ import ProjectDetail from './components/project/ProjectDetail'
 import ProductionDetailModal from './components/experience/ProductionDetailModal'
 import ToolStudy from './components/ToolStudy.jsx'
 import PerformanceProbe from './components/PerformanceProbe.jsx'
+import CreativeWorlds from './components/CreativeWorlds.jsx'
+import { filterWorld, worldFor, worlds } from './data/worlds.js'
 import useScrollWorld from './motion/useScrollWorld.js'
 import { catalog, catalogFilters, filterCatalog } from './data/catalog.js'
 import { siteConfig } from './data/siteConfig.js'
@@ -43,7 +45,28 @@ export default function App() {
   const hoverRects = useRef(new WeakMap())
   const entries = filterCatalog(category),
     active = catalog.find((entry) => entry.id === selected)
-  const projectEntries = entries.filter((entry) => entry.kind === 'project')
+  const projectEntries = (active ? worlds.find(world=>world.id===worldFor(active)).entries : entries).filter((entry) => entry.kind === 'project')
+  const pendingWorld = useRef(null)
+  useEffect(() => {
+    if (!pendingWorld.current) return
+    let second
+    // Filter changes layout; navigate only after the centralized refresh settles.
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => {
+        document.getElementById(pendingWorld.current)?.scrollIntoView({behavior:'smooth',block:'start'})
+        pendingWorld.current = null
+      })
+    })
+    return () => { cancelAnimationFrame(first); cancelAnimationFrame(second) }
+  }, [category])
+  const explore = (id) => {
+    pendingWorld.current = filterWorld[id] || null
+    if (id === category && pendingWorld.current) {
+      document.getElementById(pendingWorld.current)?.scrollIntoView({behavior:'smooth',block:'start'})
+      pendingWorld.current = null
+    }
+    setCategory(id)
+  }
   const open = (event, entry) => {
     returnFocus.current = event.currentTarget
     const box = event.currentTarget.getBoundingClientRect()
@@ -136,6 +159,10 @@ export default function App() {
               {t('EXPLORE WORKS')} ↗
             </a>
           </div>
+          <figure className="hero-portrait">
+            <img src={assetPath(siteConfig.profileImage)} alt={siteConfig.name} fetchPriority="high" decoding="async" width="1000" height="1832" />
+            <figcaption>{t('THE ARTIST / DEMİRALP DEMİREL')}</figcaption>
+          </figure>
           <div className="hero-fragments" aria-label={t('Featured artwork')}>
             {[
               catalog[0],
@@ -150,7 +177,6 @@ export default function App() {
                 <img
                   src={assetPath(entry.thumbnailLarge)}
                   alt={t(entry.title)}
-                  fetchPriority={index === 0 ? 'high' : undefined}
                   decoding="async"
                 />
                 <span>
@@ -196,7 +222,7 @@ export default function App() {
         </section>
         <section id="profile" className="camera-scene profile-scene" data-scene>
           <SceneHeader
-            number="03"
+            number="02 / B"
             title="PROFILE / STATUS"
             subtitle="PROFESSIONAL PROFILE"
           />
@@ -244,7 +270,7 @@ export default function App() {
         </section>
         <section id="showreel" className="camera-scene cinema-scene" data-scene>
           <SceneHeader
-            number="04"
+            number="03"
             title="IN MOTION."
             subtitle="SHOWREEL & BREAKDOWNS"
           />
@@ -285,9 +311,9 @@ export default function App() {
         </section>
         <section id="work" className="camera-scene works-scene" data-scene>
           <SceneHeader
-            number="05"
-            title="WORKS IN PERSPECTIVE."
-            subtitle="SELECTED WORKS"
+            number="04"
+            title="CHOOSE YOUR WORLD."
+            subtitle="EXPLORE WORKS"
           />
           <div
             className="scroll-filters"
@@ -299,7 +325,7 @@ export default function App() {
                 key={filter.id}
                 type="button"
                 aria-pressed={category === filter.id}
-                onClick={() => setCategory(filter.id)}
+                onClick={() => explore(filter.id)}
               >
                 {t(filter.label)}
               </button>
@@ -313,7 +339,6 @@ export default function App() {
               <article
                 className={`scroll-card scroll-card--${entry.kind === 'production' ? 'production' : entry.categories.includes('environment') ? 'environment' : entry.categories.includes('vfx') ? 'vfx' : entry.categories.includes('brand') ? 'product' : 'modeling'}`}
                 key={entry.id}
-                id={entry.id}
               >
                 <button
                   type="button"
@@ -325,27 +350,6 @@ export default function App() {
                   aria-haspopup="dialog"
                   aria-label={t('VIEW PROJECT') + ' — ' + t(entry.title)}
                 >
-                  <div className="card-image">
-                    {entry.thumbnail ? (
-                      <img
-                        src={assetPath(entry.thumbnail)}
-                        srcSet={`${assetPath(entry.thumbnail)} 480w, ${assetPath(entry.thumbnailLarge)} 960w`}
-                        sizes="(min-width:1800px) 19vw,(min-width:1300px) 24vw,(min-width:950px) 32vw,(min-width:600px) 48vw,95vw"
-                        width="480"
-                        height="640"
-                        alt={t(entry.title)}
-                        loading="lazy"
-                        decoding="async"
-                        style={{
-                          objectFit: entry.fit,
-                          objectPosition: entry.objectPosition,
-                        }}
-                      />
-                    ) : (
-                      <span className="type-poster">{t(entry.title)}</span>
-                    )}
-                    <i className="card-sweep" />
-                  </div>
                   <div className="card-meta">
                     <p>
                       {entry.number}
@@ -361,28 +365,14 @@ export default function App() {
           </div>
           <span className="light-rail" />
         </section>
-        <section
-          id="education"
-          className="camera-scene education-scene"
-          data-scene
-        >
-          <SceneHeader number="06" title="EDUCATION" subtitle="EDUCATION" />
-          <div className="education-composition">
-            <span className="education-line" />
-            <div className="education-copy">
-              <p>{t(education.institutionPeriod)}</p>
-              <h3>{t(education.program)}</h3>
-            </div>
-          </div>
-          <span className="light-rail" />
-        </section>
+        <CreativeWorlds onOpen={open} tilt={tilt} reset={reset}/>
         <section
           id="capabilities"
           className="camera-scene capabilities-scene"
           data-scene
         >
           <SceneHeader
-            number="07"
+            number="10"
             title="THE MAKING OF."
             subtitle="CAPABILITIES"
           />
@@ -403,6 +393,11 @@ export default function App() {
           </div>
           <span className="light-rail" />
         </section>
+        <section id="education" className="camera-scene education-scene" data-scene>
+          <SceneHeader number="11" title="EDUCATION" subtitle="EDUCATION" />
+          <div className="education-composition"><span className="education-line"/><div className="education-copy"><p>{t(education.institutionPeriod)}</p><h3>{t(education.program)}</h3></div></div>
+          <span className="light-rail"/>
+        </section>
         <section id="contact" className="camera-scene contact-scene" data-scene>
           <div className="contact-depth" aria-hidden="true">
             <img
@@ -412,7 +407,7 @@ export default function App() {
               decoding="async"
             />
           </div>
-          <p className="scene-number">08 / {t('CONTACT')}</p>
+          <p className="scene-number">12 / {t('CONTACT')}</p>
           <h2>
             {['LET’S CREATE', 'SOMETHING.'].map((word) => (
               <span className="contact-word" key={word}>

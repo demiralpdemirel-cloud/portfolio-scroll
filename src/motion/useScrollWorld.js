@@ -59,6 +59,8 @@ export default function useScrollWorld(root, revision) {
               },
             )
           const flight = motion(hero, 'top top', 'bottom top')
+          // Portrait is the primary identity and stays fully opaque throughout Hero.
+          flight.to('.hero-portrait', {rotateY:small ? -2 : -7, rotateX:small ? 0 : 3, z:small ? -8 : -60, yPercent:-5, ease:'none'},0)
           flight.to(
             '.hero-depth',
             { yPercent: 18, scale: 1.15, rotateX: small ? 0 : 8, ease: 'none' },
@@ -140,39 +142,47 @@ export default function useScrollWorld(root, revision) {
                 0,
               )
             } else if (id === 'work') {
-              scene.querySelectorAll('.scroll-card').forEach((card, index) => {
-                const entry = gsap.timeline({
-                  scrollTrigger: {
-                    trigger: card,
-                    start: 'top 100%',
-                    end: 'top 48%',
-                    scrub: 0.45,
-                    invalidateOnRefresh: true,
-                  },
-                })
-                entry.fromTo(
-                  card,
-                  {
-                    rotateX: small ? 2 : 7,
-                    rotateY: small ? 0 : ((index % 3) - 1) * 3,
-                    z: small ? -12 : -45,
-                    y: small ? 10 : 28,
-                  },
-                  { rotateX: 0, rotateY: 0, z: 0, y: 0, ease: 'none' },
-                  0,
-                )
-                entry.fromTo(
-                  card.querySelector('.card-image'),
-                  { scale: 1.035 },
-                  { scale: 1, ease: 'none' },
-                  0,
-                )
-                entry.fromTo(
-                  card.querySelector('.card-meta'),
-                  { y: 12, opacity: 0.65 },
-                  { y: 0, opacity: 1, ease: 'none' },
-                  0.12,
-                )
+              // The index is navigation; animate its stable shell, not ephemeral filter rows.
+              timeline.fromTo(scene.querySelector('.perspective-catalog'),{y:18,rotateX:small ? 0 : 3,z:-20},{y:0,rotateX:0,z:0,ease:'none'},0)
+            } else if (scene.dataset.world) {
+              const world = scene.dataset.world
+              timeline.fromTo(scene.querySelector('.world-heading'),{rotateX:small ? 0 : 6,z:-20,y:18},{rotateX:0,z:0,y:-12,ease:'none'},0)
+              const seam = scene.querySelectorAll('.world-seam span')
+              motion(scene,'top bottom','top 12%').fromTo(seam,{scaleX:0.18,rotate:world==='architecture' ? -12 : 8,xPercent:-20},{scaleX:1,rotate:0,xPercent:0,stagger:0.025,ease:'none'})
+              motion(scene,'bottom 90%','bottom 10%').to(scene.querySelector('.world-geometry'),{yPercent:-12,rotateZ:world==='compositing' ? -4 : 0,opacity:0.18,ease:'none'})
+              if(world==='architecture') {
+                motion(scene,'top 95%','top 15%').fromTo(scene.querySelector('.architectural-lines path'),{strokeDashoffset:1},{strokeDashoffset:0,ease:'none'})
+                timeline.fromTo(scene.querySelector('.world-grid'),{rotateX:72,z:-100,y:100},{rotateX:58,z:0,y:-50,ease:'none'},0)
+              } else if(world==='product') {
+                timeline.fromTo(scene.querySelectorAll('.studio-light'),{xPercent:-35,rotate:-25},{xPercent:35,rotate:15,stagger:0.15,ease:'none'},0)
+              } else if(world==='compositing') {
+                timeline.fromTo(scene.querySelector('.node-lines'),{xPercent:-6,scale:0.92},{xPercent:4,scale:1,ease:'none'},0)
+              } else if(world==='modeling') {
+                timeline.fromTo(scene.querySelector('.topology-outline'),{rotateY:-24,rotateX:15,z:-80},{rotateY:10,rotateX:0,z:20,ease:'none'},0)
+              } else if(world==='production') {
+                timeline.fromTo(scene.querySelector('.projector-beam'),{rotate:-8,xPercent:-15},{rotate:5,xPercent:10,ease:'none'},0)
+              }
+              scene.querySelectorAll('.world-entry').forEach((entry,index)=>{
+                const shot = motion(entry,'top 98%','top 18%')
+                const art=entry.querySelector('.world-art')
+                const copy=entry.querySelector('.world-entry-copy')
+                if(world==='architecture') {
+                  shot.fromTo(art,{clipPath:'inset(0 100% 0 0)',rotateY:small ? -2 : -9,z:small ? -10 : -80},{clipPath:'inset(0 0% 0 0)',rotateY:0,z:0,ease:'none'},0)
+                } else if(world==='compositing') {
+                  shot.fromTo(entry.querySelectorAll('.layer-stack i'),{x:small ? -10 : -65,rotateY:-18,z:-120},{x:0,rotateY:0,z:0,stagger:0.07,ease:'none'},0)
+                  shot.fromTo(art,{rotateY:small ? 0 : 8,z:small ? 0 : 70,scale:0.93},{rotateY:0,z:0,scale:1,ease:'none'},0)
+                } else if(world==='modeling') {
+                  const topology = entry.querySelector('.topology-image')
+                  if(topology) {
+                    shot.fromTo(art,{opacity:0.12,rotateX:small ? 0 : 6},{opacity:1,rotateX:0,ease:'none'},0)
+                    shot.fromTo(topology,{scale:1.02},{scale:1,ease:'none'},0)
+                  } else shot.fromTo(art,{rotateY:small ? 0 : -8,z:-30},{rotateY:0,z:0,ease:'none'},0)
+                } else if(world==='production') {
+                  shot.fromTo(art,{rotateY:small ? 0 : (index%2 ? 8 : -8),y:30,clipPath:'inset(10% 0 10% 0)'},{rotateY:0,y:0,clipPath:'inset(0% 0 0% 0)',ease:'none'},0)
+                } else {
+                  shot.fromTo(art,{rotateX:small ? 0 : 8,z:small ? -10 : -100,scale:0.94},{rotateX:0,z:0,scale:1,ease:'none'},0)
+                }
+                shot.fromTo(copy,{x:small ? 0 : (index%2 ? -25 : 25),y:12,opacity:0.65},{x:0,y:0,opacity:1,ease:'none'},0.15)
               })
             } else if (id === 'education') {
               timeline.fromTo(
@@ -262,5 +272,11 @@ export default function useScrollWorld(root, revision) {
       document.removeEventListener('visibilitychange', visibility)
       context.revert()
     }
-  }, [root, revision])
+  }, [root])
+  useLayoutEffect(() => {
+    // Filtering changes measurements, not the world engines. Refresh once instead of
+    // reverting/recreating every scene and every artwork tween on each category click.
+    const frame = requestAnimationFrame(() => ScrollTrigger.refresh())
+    return () => cancelAnimationFrame(frame)
+  }, [revision])
 }
